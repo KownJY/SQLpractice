@@ -1,0 +1,110 @@
+CREATE TABLE t_stu
+(
+	studentNum INT PRIMARY KEY NOT NULL,
+	studentName VARCHAR(5) NOT NULL,
+	studentMajor VARCHAR(10) NOT NULL DEFAULT '자율전공'
+
+);
+
+CREATE INDEX idx_stu ON t_stu(studentNum);
+
+CREATE TABLE t_lecture
+(
+	classNum INT PRIMARY KEY NOT NULL,
+	className VARCHAR(10) NOT NULL
+	
+);
+
+CREATE TABLE t_stulec
+(
+	studentNum INT  NOT NULL,
+	classNum INT  NOT NULL,
+	studentScore char NOT NULL DEFAULT 'F',
+	FOREIGN KEY (studentNum) REFERENCES t_stu(studentNum),
+	FOREIGN KEY (classNum) REFERENCES t_lecture(classNum),
+	PRIMARY KEY(studentNum,classNum)
+	
+);
+
+
+
+INSERT INTO t_stu
+(studentNum,studentName,studentMajor)
+VALUES
+(111,'주원','광고홍보학'),
+(112,'구교환','경찰행정학'),
+(113,'최기윤','방송홍보'),
+(114,'김무열','공연예술'),
+(211,'수애','노어노문학'),
+(212,'유인나','바리스타학'),
+(213,'고원희','역사학'),
+(214,'김지수','영상제작');
+
+INSERT INTO t_stu
+(studentNum,studentName)
+VALUES
+(115,'박보검'),
+(215,'김태리');
+
+
+INSERT INTO t_lecture
+(classNum,className)
+VALUES
+(0001,'기술과인간생활'),
+(0002,'공연예술의이해'),
+(0003,'계명정신과봉사'),
+(0004,'강대국의역사적비밀'),
+(0005,'중국문화산책');
+
+INSERT INTO t_stulec
+(studentNum,classNum,studentScore)
+VALUES
+(111,0001,'A'),
+(111,0002,'B'),
+(112,0001,'C'),
+(113,0003,'A'),
+(112,0004,'D'),
+(114,0004,'A'),
+(211,0002,'A'),
+(212,0001,'D'),
+(211,0005,'A'),
+(213,0002,'A'),
+(214,0003,'C'),
+(214,0002,'D');
+
+INSERT INTO t_stulec
+(studentNum,classNum)
+VALUES
+(115,0001),
+(115,0002),
+(215,0003),
+(215,0004);
+
+
+SELECT * FROM t_stu WHERE studentNum LIKE '%4';
+
+SELECT *,
+case 
+ 	when studentNum < 200 then '남학생'
+ 	when studentNum > 200 then '여학생'
+ 	
+ 	END AS gender
+ 	FROM t_stu;
+ 	
+SELECT TS.studentNum,TS.studentName,TS.studentMajor,TSL.studentScore,TL.className,TL.classNum 
+FROM t_stulec TSL
+INNER JOIN t_stu TS
+ON TSL.studentNum = TS.studentNum
+INNER JOIN t_lecture TL
+ON TSL.classNum = TL.classNum
+ORDER BY TS.studentNum;
+
+CREATE VIEW v_stu_w
+AS
+SELECT * FROM t_stu WHERE studentNum > 200;
+
+SELECT * FROM v_stu_w;
+
+DROP VIEW v_stu_w;
+
+SHOW FULL TABLES;
